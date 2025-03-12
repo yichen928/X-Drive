@@ -1,0 +1,38 @@
+name: SDv2.1pc_box
+pretrained_model_name_or_path: pretrained/stable-diffusion-2-1-base/
+pretrained_RangeLDM_model_name_or_path: pretrained/RangeLDM-nuScenes/
+
+bbox_mode: 'all-xyz'
+bbox_view_shared: true
+crossview_attn_type: basic
+train_with_same_noise: false
+train_with_same_t: true
+
+runner_module: xdrive.runner.pc_ldm_box_RangeLDM_runner.RangeLDMPCBoxRunner
+
+pipe_module: xdrive.pipeline.pipeline_pc_RangeLDM_box.RangeLDMPCBoxPipeline
+
+use_fp32_for_unet_trainable: true
+unet_class: xdrive.networks.unet_pc_condition_RangeLDM.RangeLDMPCUNet2DModel
+unet_dir: unet
+unet:
+  img_size: ${dataset.range_img_size}
+  cross_attention_dim: 1024
+
+
+bbox_embedder_cls: xdrive.networks.bbox_embedder.ContinuousBBoxXYZWithTextEmbedding
+bbox_embedder_param:
+  n_classes: 10
+  class_token_dim: 1024
+  trainable_class_token: false
+  use_text_encoder_init: true
+  embedder_num_freq: 8
+  proj_dims: [768, 512, 512, 1024]
+  mode: 'all-xyzd'
+  minmax_normalize: false
+  fov: [-30, 10]
+  max_range: 80
+
+
+drop_cond_ratio: 0.25
+

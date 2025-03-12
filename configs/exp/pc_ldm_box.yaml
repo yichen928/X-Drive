@@ -1,0 +1,7 @@
+# @package _global_
+defaults:
+  - /dataset/Nuscenes_lidar_rangeldm
+  - model: ../../model/SDv2.1pc_RangeLDM_box
+  - _self_  # make sure override
+
+task_id: pc_ldm_box

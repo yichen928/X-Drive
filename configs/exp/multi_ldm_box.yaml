@@ -1,0 +1,7 @@
+# @package _global_
+defaults:
+  - /dataset/Nuscenes_multi
+  - model: ../../model/SDv2.1_multi_box
+  - _self_  # make sure override
+
+task_id: multi_ldm

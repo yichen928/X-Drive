@@ -1,0 +1,6 @@
+Collecting h5py
+  Using cached h5py-3.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.5 kB)
+Requirement already satisfied: numpy>=1.17.3 in /home/yichen/anaconda3/envs/xdrive/lib/python3.8/site-packages (from h5py) (1.24.4)
+Using cached h5py-3.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.3 MB)
+Installing collected packages: h5py
+Successfully installed h5py-3.11.0

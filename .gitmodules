@@ -1,0 +1,6 @@
+[submodule "third_party/bevfusion"]
+	path = third_party/bevfusion
+	url = https://github.com/mit-han-lab/bevfusion.git
+[submodule "third_party/RangeLDM"]
+	path = third_party/RangeLDM
+	url = https://github.com/WoodwindHu/RangeLDM.git

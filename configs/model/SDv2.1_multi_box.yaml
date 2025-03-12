@@ -1,0 +1,80 @@
+name: SDv2.1_multi_box
+pretrained_model_name_or_path: pretrained/stable-diffusion-2-1-base/
+pretrained_pc_model_path: pretrained/RangeLDM-nuScenes/
+bbox_mode: 'all-xyz'
+bbox_view_shared: false
+crossview_attn_type: basic
+train_with_same_noise: false
+
+runner_module: xdrive.runner.multi_RangeLDM_box_runner.MultiRangeLDMBoxRunner
+
+pipe_module: xdrive.pipeline.pipeline_multi_RangeLDM_box.RangeLDMMultiBoxPipeline
+
+use_fp32_for_unet_trainable: true
+unet_class: xdrive.networks.unet_multi_RangeLDM_condition.UNetMultiRangeLDMBoxConditionModel
+unet_dir: unet
+pc_unet:
+  trainable_state: all  # only_new or all
+  cross_attention_dim: 1024
+  use_gsa: true
+
+img_unet_class: xdrive.networks.unet_2d_sep_condition_multiview.UNet2DSepConditionModelMultiview
+img_unet:
+  trainable_state: only_new  # only_new or all
+  cross_view_type: half
+  neighboring_view_pair: ${dataset.neighboring_view_pair}
+  neighboring_attn_type: add
+  zero_module_type: zero_linear
+  crossview_attn_type: ${..crossview_attn_type}
+  img_size: ${dataset.image_size}
+  num_freqs: 8
+  separate_condition: False
+  use_gsa: true
+
+
+unet:
+  zero_module_type: zero_linear
+  down_pc_block_channels: [128, 128, 128, 256]
+  down_img_block_channels: [320, 320, 640, 1280]
+  down_cross_attn_head_dims: [40, 40, 80, 80]
+  down_img_scale_factors: [8, 16, 32, 64]
+
+  up_pc_block_channels: [256, 256, 128]
+  up_img_block_channels: [1280, 1280, 640]
+  up_cross_attn_head_dims: [80, 80, 80]
+  up_img_scale_factors: [32, 16, 8]
+
+  pc_ray_sample_num: [36, 36, 18, 9, 18, 36, 36]
+  img_ray_sample_num: [36, 36, 18, 9, 18, 36, 36]
+  query_pos_embed: 'fourier'
+  depth_embed: 'fourier'
+  fov: [-30, 10]
+  pc_max_range: 70
+  img_max_depth: 70
+
+pc_bbox_embedder_cls: xdrive.networks.bbox_embedder.ContinuousBBoxXYZWithTextEmbedding
+pc_bbox_embedder_param:
+  n_classes: 10
+  class_token_dim: 1024
+  trainable_class_token: false
+  use_text_encoder_init: true
+  embedder_num_freq: 8
+  proj_dims: [768, 512, 512, 1024]
+  mode: 'all-xyzd'
+  minmax_normalize: false
+  fov: [-30, 10]
+  max_range: 80
+
+
+img_bbox_embedder_cls: xdrive.networks.bbox_embedder.ContinuousBBoxViewWithTextEmbedding
+img_bbox_embedder_param:
+  n_classes: 10
+  class_token_dim: 1024
+  trainable_class_token: false
+  use_text_encoder_init: true
+  embedder_num_freq: 8
+  proj_dims: [768, 512, 512, 1024]
+  mode: 'all-whd'
+  minmax_normalize: false
+  canvas_size: [400, 224]
+
